@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.javalin.http.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -136,6 +137,15 @@ public class HttpServer {
         // Fallback handler
         getApp().error(404, this::notFoundHandler);
         getApp().get("/status/server", new StatusServerHandler()::handle);
+
+        Handler corsHandler = ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        };
+
+        // Apply CORS handler to specific route
+        getApp().before("/command", corsHandler);
         getApp().post("/command", new CommandHandler());
     }
 
