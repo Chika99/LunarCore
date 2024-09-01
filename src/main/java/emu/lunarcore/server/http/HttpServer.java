@@ -137,15 +137,7 @@ public class HttpServer {
         // Fallback handler
         getApp().error(404, this::notFoundHandler);
         getApp().get("/status/server", new StatusServerHandler()::handle);
-
-        Handler corsHandler = ctx -> {
-            ctx.header("Access-Control-Allow-Origin", "*");
-            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        };
-
-        // Apply CORS handler to specific route
-        getApp().before("/command", corsHandler);
+        
         getApp().post("/command", new CommandHandler());
     }
 
