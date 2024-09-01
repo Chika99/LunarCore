@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.javalin.http.Handler;
+import io.javalin.plugin.bundled.CorsPluginConfig;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
@@ -37,7 +38,11 @@ public class HttpServer {
 
     public HttpServer(ServerType type) {
         this.type = type;
-        this.app = Javalin.create();
+        this.app = Javalin.create(javalinConfig -> {
+            javalinConfig.plugins.enableCors(corsContainer -> {
+                corsContainer.add(CorsPluginConfig::anyHost);
+            });
+        });
         this.modes = new LinkedList<>();
         this.regions = new Object2ObjectOpenHashMap<>();
 
